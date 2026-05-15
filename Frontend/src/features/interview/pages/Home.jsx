@@ -5,11 +5,11 @@ import { useAuth } from "../../auth/hooks/useAuth";
 
 const Home = () => {
   const {
-    loading,
-    generateReport,
-    reports,
-    getAllReports,
-  } = useInterview();
+  loading,
+  generateReport,
+  reports = [],
+  getAllReports,
+} = useInterview();
 
   const {handleLogout} = useAuth()
 
