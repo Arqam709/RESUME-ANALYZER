@@ -1,0 +1,18 @@
+4 layers architexture
+
+UI
+=>components
+=>pages
+
+HOOK
+=> hooks =>for managing state and api layers
+
+
+State =>data store karne ka lia
+=>auth.context.jsx
+=>ai.context.jsx
+
+
+API =>for communication with backend
+=>services
+   =>auth.api.js

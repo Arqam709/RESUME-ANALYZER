@@ -1,0 +1,217 @@
+const { GoogleGenAI } = require("@google/genai");
+const { z } = require("zod");
+const { zodToJsonSchema } = require("zod-to-json-schema");
+
+const ai = new GoogleGenAI({
+  apiKey: process.env.GOOGLE_GENAI_API_KEY,
+});
+
+const interviewReportSchema = z
+  .object({
+    matchScore: z
+      .number()
+      .describe(
+        "The match score between the candidate and the job role. The score is between 0 and 100."
+      ),
+
+    technicalQuestions: z
+      .array(
+        z.object({
+          question: z.string().describe("The technical question to ask."),
+          intention: z.string().describe("Why the interviewer asks this question."),
+          answer: z.string().describe("How the candidate should answer."),
+        })
+      )
+      .describe("Technical interview questions with intention and answers."),
+
+    behavioralQuestions: z
+      .array(
+        z.object({
+          question: z.string().describe("The behavioral question to ask."),
+          intention: z.string().describe("Why the interviewer asks this question."),
+          answer: z.string().describe("How the candidate should answer."),
+        })
+      )
+      .describe("Behavioral interview questions with intention and answers."),
+
+    skillGaps: z
+      .array(
+        z.object({
+          skill: z.string().describe("Skill missing or weak in the candidate."),
+          severity: z
+            .enum(["Low", "Medium", "High"])
+            .describe("Importance of this skill gap."),
+        })
+      )
+      .describe("Candidate skill gaps."),
+
+    preparationPlan: z
+      .array(
+        z.object({
+          day: z.number().describe("Day number of the preparation plan."),
+          focus: z.string().describe("Main focus for that day."),
+          tasks: z.array(z.string()).describe("Tasks for that day."),
+        })
+      )
+      .describe("Day-wise preparation plan."),
+      
+      title : z.string().describe("the title of the job the interview report is generated for")
+  })
+  .describe("Interview report for the candidate.");
+
+async function generateInterviewReport(resume, selfDescription, jobDescription) {
+const prompt = `
+You are an expert interviewer.
+
+Generate a structured interview report.
+
+IMPORTANT:
+- Return ONLY valid JSON
+- Do NOT explain anything
+- Follow EXACT structure below
+- DO NOT repeat keys
+- DO NOT use flat arrays
+- ALWAYS return objects inside arrays
+
+FORMAT:
+
+{
+  "matchScore": 85,
+  "technicalQuestions": [
+    {
+      "question": "string",
+      "intention": "string",
+      "answer": "string"
+    }
+  ],
+  "behavioralQuestions": [
+    {
+      "question": "string",
+      "intention": "string",
+      "answer": "string"
+    }
+  ],
+  "skillGaps": [
+    {
+      "skill": "string",
+      "severity": "Low | Medium | High"
+    }
+  ],
+  "preparationPlan": [
+    {
+      "day": 1,
+      "focus": "string",
+      "tasks": ["task1", "task2"]
+    }
+  ]
+}
+
+BAD EXAMPLE (DO NOT DO THIS):
+["question", "answer", "intention"]
+
+GOOD EXAMPLE:
+[
+  {
+    "question": "Explain middleware",
+    "intention": "Test backend knowledge",
+    "answer": "Middleware are functions..."
+  }
+]
+
+Resume:
+${resume}
+
+Self Description:
+${selfDescription}
+
+Job Description:
+${jobDescription}
+`;
+
+  const response = await ai.models.generateContent({
+    model: "gemini-2.5-flash",
+    contents: prompt,
+    config: {
+  responseMimeType: "application/json",
+  responseSchema: {
+    type: "object",
+    properties: {
+      matchScore: { type: "number" },
+
+      technicalQuestions: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            question: { type: "string" },
+            intention: { type: "string" },
+            answer: { type: "string" },
+          },
+          required: ["question", "intention", "answer"],
+        },
+      },
+
+      behavioralQuestions: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            question: { type: "string" },
+            intention: { type: "string" },
+            answer: { type: "string" },
+          },
+          required: ["question", "intention", "answer"],
+        },
+      },
+
+      skillGaps: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            skill: { type: "string" },
+            severity: {
+              type: "string",
+              enum: ["Low", "Medium", "High"],
+            },
+          },
+          required: ["skill", "severity"],
+        },
+      },
+
+      preparationPlan: {
+        type: "array",
+        items: {
+          type: "object",
+          properties: {
+            day: { type: "number" },
+            focus: { type: "string" },
+            tasks: {
+              type: "array",
+              items: { type: "string" },
+            },
+          },
+          required: ["day", "focus", "tasks"],
+        },
+      },
+    },
+    required: [
+      "matchScore",
+      "technicalQuestions",
+      "behavioralQuestions",
+      "skillGaps",
+      "preparationPlan",
+    ],
+  },
+}
+  });
+
+  return JSON.parse(response.text);
+
+}
+
+module.exports = {
+  generateInterviewReport,
+};
+
+
