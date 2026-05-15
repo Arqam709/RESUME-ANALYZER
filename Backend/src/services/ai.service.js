@@ -129,7 +129,7 @@ Job Description:
 ${jobDescription}
 `;
 
-  const response = await ai.models.generateContent({
+  const result = await model.generateContent({
     model: "gemini-2.5-flash",
     contents: prompt,
     config: {
@@ -207,7 +207,10 @@ ${jobDescription}
 }
   });
 
-  return JSON.parse(response.text);
+  const response = await result.response;
+const text = response.text();
+
+return JSON.parse(text);
 
 }
 
