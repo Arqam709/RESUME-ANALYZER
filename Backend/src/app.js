@@ -6,7 +6,7 @@ const app = express();
 
 // Enable CORS for the frontend application why we need cors? because our frontend and backend are running on different ports during development, and CORS allows the frontend to make requests to the backend without being blocked by the browser's same-origin policy.
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: "https://resume-analyzer-hazel-eta.vercel.app",
   credentials: true
 }));
 

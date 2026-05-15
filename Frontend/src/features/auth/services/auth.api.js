@@ -1,56 +1,50 @@
-import axios from "axios"
+import axios from "axios";
 
-export async function register ({username ,email , password}){
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
-    try {
-        const response = await  axios.post('http://localhost:3000/api/auth/register', {
-        username , email , password
-    },{
-        withCredentials :  true //now our server has the premission to set or read the data from the cookies
-    })
+export async function register({ username, email, password }) {
+  try {
+    const response = await axios.post(
+      `${API_URL}/api/auth/register`,
+      { username, email, password },
+      { withCredentials: true }
+    );
 
-    return response.data
-
-    } catch (err) {
-        console.log(err);
-        
-    }
-
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
 }
 
-export async function login ({email, password}){
-    try {
-        const response = await axios.post('http://localhost:3000/api/auth/login', {
-            email ,password //data we are sending here
-        } ,{
-            withCredentials : true
-        })
+export async function login({ email, password }) {
+  try {
+    const response = await axios.post(
+      `${API_URL}/api/auth/login`,
+      { email, password },
+      { withCredentials: true }
+    );
 
-        return response.data
-    } catch (err) {
-        console.log(err);
-        
-    }
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
 }
 
+export async function logout() {
+  try {
+    const response = await axios.get(`${API_URL}/api/auth/logout`, {
+      withCredentials: true,
+    });
 
-export async function logout(){
-    try {
-        const response = axios.get('http://localhost:3000/api/auth/logout',{
-            withCredentials : true
-        })
-
-        return (await response).data
-    } catch (err) {
-        console.log(err);
-        
-    }
+    return response.data;
+  } catch (err) {
+    console.log(err);
+  }
 }
-
 
 export async function getMe() {
   try {
-    const response = await axios.get("http://localhost:3000/api/auth/get-me", {
+    const response = await axios.get(`${API_URL}/api/auth/get-me`, {
       withCredentials: true,
     });
 
