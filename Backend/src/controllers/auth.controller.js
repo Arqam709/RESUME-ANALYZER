@@ -43,7 +43,12 @@ async function registerUserController(req,res){
     )
 
     //what is a cookie ? cookie is a small piece of data that is stored in the user's browser and it is sent to the server with every request so that the server can identify the user and provide the personalized experience to the user so we can use cookie to store the token in the user's browser so that we can use that token to authenticate and authorize the user in future requests
-    res.cookie("token",token)
+    res.cookie("token", token, {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+  maxAge: 24 * 60 * 60 * 1000,
+});
 
     res.status(201).json({
         message : "user registered successfully",
@@ -89,7 +94,12 @@ async function loginUserController(req,res){
     )
 
     //set the cookie
-    res.cookie("token",token)
+    res.cookie("token", token, {
+  httpOnly: true,
+  secure: true,
+  sameSite: "none",
+  maxAge: 24 * 60 * 60 * 1000,
+});
 
     res.status(200).json({
         message : "user logged in successfully",
