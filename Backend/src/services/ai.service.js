@@ -1,11 +1,12 @@
-const { GoogleGenAI } = require("@google/genai");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 const { z } = require("zod");
 const { zodToJsonSchema } = require("zod-to-json-schema");
 
-const ai = new GoogleGenAI({
-  apiKey: process.env.GOOGLE_GENAI_API_KEY,
-});
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_GENAI_API_KEY);
 
+const model = genAI.getGenerativeModel({
+  model: "gemini-1.5-flash",
+});
 const interviewReportSchema = z
   .object({
     matchScore: z
