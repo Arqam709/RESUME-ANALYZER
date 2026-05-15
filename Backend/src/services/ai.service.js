@@ -129,85 +129,9 @@ Job Description:
 ${jobDescription}
 `;
 
-  const result = await model.generateContent({
-    model: "gemini-2.5-flash",
-    contents: prompt,
-    config: {
-  responseMimeType: "application/json",
-  responseSchema: {
-    type: "object",
-    properties: {
-      matchScore: { type: "number" },
+  const result = await model.generateContent(prompt);
 
-      technicalQuestions: {
-        type: "array",
-        items: {
-          type: "object",
-          properties: {
-            question: { type: "string" },
-            intention: { type: "string" },
-            answer: { type: "string" },
-          },
-          required: ["question", "intention", "answer"],
-        },
-      },
-
-      behavioralQuestions: {
-        type: "array",
-        items: {
-          type: "object",
-          properties: {
-            question: { type: "string" },
-            intention: { type: "string" },
-            answer: { type: "string" },
-          },
-          required: ["question", "intention", "answer"],
-        },
-      },
-
-      skillGaps: {
-        type: "array",
-        items: {
-          type: "object",
-          properties: {
-            skill: { type: "string" },
-            severity: {
-              type: "string",
-              enum: ["Low", "Medium", "High"],
-            },
-          },
-          required: ["skill", "severity"],
-        },
-      },
-
-      preparationPlan: {
-        type: "array",
-        items: {
-          type: "object",
-          properties: {
-            day: { type: "number" },
-            focus: { type: "string" },
-            tasks: {
-              type: "array",
-              items: { type: "string" },
-            },
-          },
-          required: ["day", "focus", "tasks"],
-        },
-      },
-    },
-    required: [
-      "matchScore",
-      "technicalQuestions",
-      "behavioralQuestions",
-      "skillGaps",
-      "preparationPlan",
-    ],
-  },
-}
-  });
-
-  const response = await result.response;
+const response = await result.response;
 const text = response.text();
 
 return JSON.parse(text);
