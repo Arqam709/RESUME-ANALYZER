@@ -6,7 +6,9 @@ const { generateInterviewReport } = require("../services/ai.service");
 async function generateInterviewReportController(req, res) {
   try {
 
-    
+    console.log("USER:", req.user);
+    console.log("BODY:", req.body);
+    console.log("FILE:", req.file);
     const resumeFile = req.file; //getting the uploaded file from the request object, which is added by the multer middleware when we use upload.single("resume") in our route. The uploaded file will be available in req.file and we can access its properties like buffer, originalname, mimetype etc. to process the file as needed.
 
     if (!resumeFile) {
@@ -75,11 +77,13 @@ Skills: Node.js, Express, MongoDB...
       interviewReport,
     });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      message: err.message,
-    });
-  }
+  console.log("GENERATE REPORT ERROR:", err);
+
+  res.status(500).json({
+    message: "Failed to generate report",
+    error: err.message,
+  });
+}
 
 }
 
