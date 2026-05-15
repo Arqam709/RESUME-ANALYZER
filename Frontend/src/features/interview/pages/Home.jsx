@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { useInterview } from "../hooks/useInterview";
+import { useInterview } from "../hooks/useinterview.js";
 import { useAuth } from "../../auth/hooks/useAuth";
 
 const Home = () => {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useInterview } from "../hooks/useInterview";
+import { useInterview } from "../hooks/useinterview.js";
 import { useNavigate,useParams } from "react-router-dom";
 
 const Interview = () => {
