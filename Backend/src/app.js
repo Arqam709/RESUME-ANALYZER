@@ -9,7 +9,8 @@ app.use(cors({
   origin: [
     "http://localhost:5173",
     "https://resume-analyzer-hazel-eta.vercel.app",
-    "https://resume-analyzer-git-main-nothingparakho43-9146s-projects.vercel.app"
+    "https://resume-analyzer-git-main-nothingparakho43-9146s-projects.vercel.app",
+    "https://resume-analyzer-905a4z8zc-nothingparakho43-9146s-projects.vercel.app"
   ],
   credentials: true
 }));
