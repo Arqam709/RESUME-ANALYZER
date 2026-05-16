@@ -132,7 +132,13 @@ ${jobDescription}
   const result = await model.generateContent(prompt);
 
 const response = await result.response;
-const text = response.text();
+
+let text = response.text();
+
+text = text
+  .replace(/```json/g, "")
+  .replace(/```/g, "")
+  .trim();
 
 return JSON.parse(text);
 
